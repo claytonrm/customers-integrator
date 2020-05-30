@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder
 public class ResourceCreatedResponse {
 
-    private String id;
+    private Long id;
     private String uri;
     private LocalDateTime createdAt;
 

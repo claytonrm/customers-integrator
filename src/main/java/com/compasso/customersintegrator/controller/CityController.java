@@ -2,6 +2,8 @@ package com.compasso.customersintegrator.controller;
 
 import java.time.LocalDateTime;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,17 +23,17 @@ import com.compasso.customersintegrator.service.CityService;
 @RequestMapping("/v1/cities")
 public class CityController {
 
-    private final CityService cityService;
+    private final CityService service;
 
     @Autowired
-    public CityController(final CityService cityService) {
-        this.cityService = cityService;
+    public CityController(final CityService service) {
+        this.service = service;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ResourceCreatedResponse> create(@RequestBody final City newCity, final UriComponentsBuilder uriComponentsBuilder) {
-        final City createdCity = this.cityService.create(newCity);
+    public ResponseEntity<ResourceCreatedResponse> create(@Valid @RequestBody final City newCity, final UriComponentsBuilder uriComponentsBuilder) {
+        final City createdCity = this.service.create(newCity);
         final UriComponents uriComponents = uriComponentsBuilder.cloneBuilder().path("/v1/cities/{id}").buildAndExpand(createdCity.getId());
         return ResponseEntity.created(uriComponents.toUri()).body(
                 ResourceCreatedResponse.builder()

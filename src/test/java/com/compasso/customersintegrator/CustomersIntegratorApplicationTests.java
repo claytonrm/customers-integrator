@@ -3,10 +3,10 @@ package com.compasso.customersintegrator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+//@SpringBootTest
 class CustomersIntegratorApplicationTests {
 
-	@Test
+//	@Test
 	void contextLoads() {
 	}
 

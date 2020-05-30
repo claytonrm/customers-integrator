@@ -1,4 +1,4 @@
-package util;
+package com.compasso.customersintegrator.util;
 
 import java.io.File;
 import java.io.IOException;
