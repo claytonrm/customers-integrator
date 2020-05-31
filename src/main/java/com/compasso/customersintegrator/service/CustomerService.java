@@ -42,6 +42,11 @@ public class CustomerService {
                 .orElseThrow(() -> new InstanceNotFoundException(String.format("Customer %d does not exist!", id)));
     }
 
+    public void remove(final Long id) throws InstanceNotFoundException {
+        final Customer existingCustomer = findById(id);
+        this.repository.delete(existingCustomer);
+    }
+
     private City getExistingCustomerCity(final Long cityId) {
         try {
             return this.cityService.findById(cityId);
