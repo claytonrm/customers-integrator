@@ -22,7 +22,7 @@ import com.compasso.customersintegrator.model.City;
 import com.compasso.customersintegrator.repository.CityRepository;
 
 @SpringBootTest
-@DisplayName("[CityService] - Unit Tests for create City")
+@DisplayName("[CityService] - Tests case for create City")
 public class CityServiceCreateTest {
 
     private static final int NO_INTERACTIONS = 0;

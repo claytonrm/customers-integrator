@@ -34,6 +34,14 @@ public class CustomerService {
         return this.repository.save(customer);
     }
 
+    public Customer findById(final Long id) throws InstanceNotFoundException {
+        if (id == null) {
+            return null;
+        }
+        return this.repository.findById(id)
+                .orElseThrow(() -> new InstanceNotFoundException(String.format("Customer %d does not exist!", id)));
+    }
+
     private City getExistingCustomerCity(final Long cityId) {
         try {
             return this.cityService.findById(cityId);

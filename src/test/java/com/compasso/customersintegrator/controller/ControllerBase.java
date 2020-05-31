@@ -13,8 +13,8 @@ import com.compasso.customersintegrator.service.CustomerService;
 
 public class ControllerBase {
 
-    protected static final String CITY_RELATIVE_PATH = "/v1/cities";
-    protected static final String CUSTOMER_RELATIVE_PATH = "/v1/customers";
+    protected static final String CITY_RELATIVE_PATH = "/v1/cities/";
+    protected static final String CUSTOMER_RELATIVE_PATH = "/v1/customers/";
 
     @Autowired
     protected MockMvc mockMvc;

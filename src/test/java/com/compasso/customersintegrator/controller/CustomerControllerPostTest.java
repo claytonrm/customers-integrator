@@ -26,7 +26,7 @@ import com.compasso.customersintegrator.util.FileUtils;
 import com.compasso.customersintegrator.util.JsonUtils;
 
 @WebMvcTest(CustomerController.class)
-@DisplayName("[CustomerController] - Test Cases for POSTs on CustomerController")
+@DisplayName("[CustomerController] - Test cases for POSTs on CustomerController")
 public class CustomerControllerPostTest extends ControllerBase {
 
     @Test

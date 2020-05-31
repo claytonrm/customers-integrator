@@ -22,7 +22,7 @@ import com.compasso.customersintegrator.util.FileUtils;
 import com.compasso.customersintegrator.util.JsonUtils;
 
 @SpringBootTest
-@DisplayName("[CustomerService] - Unit Tests for create Customer")
+@DisplayName("[CustomerService] - Tests case for create Customer")
 public class CustomerServiceCreateTest {
 
     @Autowired
