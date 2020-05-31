@@ -17,29 +17,30 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.compasso.customersintegrator.domain.ResourceCreatedResponse;
-import com.compasso.customersintegrator.model.City;
-import com.compasso.customersintegrator.service.CityService;
+import com.compasso.customersintegrator.model.Customer;
+import com.compasso.customersintegrator.service.CustomerService;
 
 @RestController
-@RequestMapping("/v1/cities")
-public class CityController {
+@RequestMapping("/v1/customers")
+public class CustomerController {
 
-    private final CityService service;
+    private final CustomerService service;
 
     @Autowired
-    public CityController(final CityService service) {
+    private CustomerController(final CustomerService service) {
         this.service = service;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ResourceCreatedResponse> create(@Valid @RequestBody final City newCity, final UriComponentsBuilder uriComponentsBuilder) throws InstanceAlreadyExistsException {
-        final City createdCity = this.service.create(newCity);
-        final UriComponents uriComponents = uriComponentsBuilder.cloneBuilder().path("/v1/cities/{id}").buildAndExpand(createdCity.getId());
+    public ResponseEntity<ResourceCreatedResponse> create(@Valid @RequestBody final Customer newCustomer, final UriComponentsBuilder uriComponentsBuilder)
+            throws InstanceAlreadyExistsException {
+        final Customer createdCustomer = this.service.create(newCustomer);
+        final UriComponents uriComponents = uriComponentsBuilder.cloneBuilder().path("/v1/customers/{id}").buildAndExpand(createdCustomer.getId());
 
         return ResponseEntity.created(uriComponents.toUri()).body(
                 ResourceCreatedResponse.builder()
-                        .id(createdCity.getId())
+                        .id(createdCustomer.getId())
                         .uri(uriComponents.toUriString())
                         .createdAt(LocalDateTime.now())
                         .build()

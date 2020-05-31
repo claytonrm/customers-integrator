@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
+import javax.validation.ConstraintViolationException;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -47,12 +48,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(new ApiError(HttpStatus.PRECONDITION_FAILED, new HashSet<>(Arrays.asList(e.getMessage()))));
     }
 
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler(ConstraintViolationException.class)
-//    public ResponseEntity<Object> handleConstraintViolationException(final ConstraintViolationException e) {
-//        final Set<String> errors = e.().stream().map(constraintViolation -> constraintViolation.getMessageTemplate()).collect(Collectors.toSet());
-//        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, errors));
-//    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(final ConstraintViolationException e) {
+        final Set<String> errors = e.getConstraintViolations().stream().map(constraintViolation -> constraintViolation.getMessageTemplate()).collect(Collectors.toSet());
+        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, errors));
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
