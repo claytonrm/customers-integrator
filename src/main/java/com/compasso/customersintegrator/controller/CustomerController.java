@@ -30,6 +30,10 @@ import com.compasso.customersintegrator.model.Customer;
 import com.compasso.customersintegrator.service.CustomerService;
 import com.github.fge.jsonpatch.JsonPatch;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api(tags = "Customers", value = "Operations for customers resources")
 @RestController
 @RequestMapping("/v1/customers")
 public class CustomerController {
@@ -41,6 +45,7 @@ public class CustomerController {
         this.service = service;
     }
 
+    @ApiOperation(value = "Create a single customer")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ResourceCreatedResponse> create(@Valid @RequestBody final Customer newCustomer, final UriComponentsBuilder uriComponentsBuilder)
@@ -57,18 +62,21 @@ public class CustomerController {
         );
     }
 
+    @ApiOperation(value = "Get a single customer")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Customer> get(@PathVariable final Long id) throws InstanceNotFoundException {
         return ResponseEntity.ok(this.service.findById(id));
     }
 
+    @ApiOperation(value = "Get customers by query params")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<Customer>> findByParams(final CustomerCriteria criteria) {
         return ResponseEntity.ok(this.service.findByCriteria(criteria));
     }
 
+    @ApiOperation(value = "Remove a single customer")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Object> delete(@PathVariable final Long id) throws InstanceNotFoundException {
@@ -76,12 +84,14 @@ public class CustomerController {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value = "Partial update on customer")
     @PatchMapping(value = "/{id}", consumes = "application/json-patch+json")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Customer> update(@PathVariable final Long id, @RequestBody JsonPatch patch) throws InstanceNotFoundException {
         return ResponseEntity.ok(this.service.update(id, patch));
     }
 
+    @ApiOperation(value = "Full update on customer")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Object> update(@PathVariable final Long id, @RequestBody Customer customer) throws InstanceNotFoundException {
