@@ -1,11 +1,10 @@
-package com.compasso.customersintegrator.model;
+package com.compasso.customersintegrator.domain.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,11 +22,7 @@ public class City {
     @Id
     @GeneratedValue
     private Long id;
-
-    @NotBlank(message = "Property \"name\" is required.")
     private String name;
-
-    @NotBlank(message = "Property \"federativeUnit\" is required.")
     private String federativeUnit;
 
 }

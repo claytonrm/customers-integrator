@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -19,13 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.compasso.customersintegrator.domain.CityCriteria;
 import com.compasso.customersintegrator.domain.CustomerCriteria;
-import com.compasso.customersintegrator.model.City;
-import com.compasso.customersintegrator.model.Customer;
+import com.compasso.customersintegrator.domain.Gender;
+import com.compasso.customersintegrator.domain.model.City;
+import com.compasso.customersintegrator.domain.model.Customer;
 import com.compasso.customersintegrator.repository.CustomerRepository;
-import com.compasso.customersintegrator.util.FileUtils;
-import com.compasso.customersintegrator.util.JsonUtils;
 
 @SpringBootTest
 @DisplayName("[CustomerService] - Tests cases for find methods on Customer")
@@ -40,10 +39,7 @@ public class CustomerServiceFindTest {
     @Test
     public void findById_shouldFindCustomerById() throws InstanceNotFoundException {
         /* Given */
-        final Customer customer = JsonUtils.fromString(
-                FileUtils.readFile("./samples/existing_customer_sample.json"),
-                Customer.class
-        );
+        final Customer customer = getMockedExistingCustomer();
         given(this.repository.findById(customer.getId())).willReturn(Optional.of(customer));
 
         /* When */
@@ -61,12 +57,14 @@ public class CustomerServiceFindTest {
     }
 
     @Test
+    public void findById_shouldReturnNull() throws InstanceNotFoundException {
+        assertThat(this.service.findById(null)).isNull();
+    }
+
+    @Test
     public void findByCriteria_shouldCallRepositoryToRetrieveCustomerByName() {
         /* Given */
-        final Customer existingCustomer = JsonUtils.fromString(
-                FileUtils.readFile("./samples/existing_customer_sample.json"),
-                Customer.class
-        );
+        final Customer existingCustomer = getMockedExistingCustomer();
         final List<Customer> expectedCustomers = Arrays.asList(existingCustomer);
         given(this.repository.findByName(anyString())).willReturn(expectedCustomers);
 
@@ -80,10 +78,7 @@ public class CustomerServiceFindTest {
     @Test
     public void findByCriteria_shouldCallRepositoryToRetrieveAllCustomers() {
         /* Given */
-        final Customer existingCustomer = JsonUtils.fromString(
-                FileUtils.readFile("./samples/existing_customer_sample.json"),
-                Customer.class
-        );
+        final Customer existingCustomer = getMockedExistingCustomer();
         final List<Customer> expectedCustomers = Arrays.asList(existingCustomer);
         given(this.repository.findAll()).willReturn(expectedCustomers);
 
@@ -93,6 +88,17 @@ public class CustomerServiceFindTest {
         /* Then */
         assertThat(customers).isEqualTo(expectedCustomers);
         verify(this.repository).findAll();
+    }
+
+    private Customer getMockedExistingCustomer() {
+        return new Customer(
+                1L,
+                "Billy Jean",
+                Gender.MALE,
+                LocalDate.of(2000, 1, 22),
+                20,
+                new City(1L, "Florianópolis", "SC")
+        );
     }
 
 }

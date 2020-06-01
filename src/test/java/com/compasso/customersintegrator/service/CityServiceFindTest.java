@@ -20,7 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.compasso.customersintegrator.domain.CityCriteria;
-import com.compasso.customersintegrator.model.City;
+import com.compasso.customersintegrator.domain.model.City;
 import com.compasso.customersintegrator.repository.CityRepository;
 import com.compasso.customersintegrator.util.FileUtils;
 import com.compasso.customersintegrator.util.JsonUtils;
@@ -59,6 +59,11 @@ public class CityServiceFindTest {
     }
 
     @Test
+    public void findById_shouldReturnNull() throws InstanceNotFoundException {
+        assertThat(this.service.findById(null)).isNull();
+    }
+
+    @Test
     public void findByCriteria_shouldCallRepositoryToRetrieveCityByNameAndFederativeUnit() {
         /* Given */
         final List<City> expectedCities = Arrays.asList(new City(2L, "Joinville", "SC"));
@@ -66,6 +71,32 @@ public class CityServiceFindTest {
 
         /* When */
         final List<City> cities = this.service.findByCriteria(CityCriteria.builder().name("Joinville").federativeUnit("SC").build());
+
+        /* Then */
+        assertThat(cities).isEqualTo(expectedCities);
+    }
+
+    @Test
+    public void findByCriteria_shouldCallRepositoryToRetrieveCityByName() {
+        /* Given */
+        final List<City> expectedCities = Arrays.asList(new City(2L, "Joinville", "SC"));
+        given(this.repository.findByName(anyString())).willReturn(expectedCities);
+
+        /* When */
+        final List<City> cities = this.service.findByCriteria(CityCriteria.builder().name("Joinville").build());
+
+        /* Then */
+        assertThat(cities).isEqualTo(expectedCities);
+    }
+
+    @Test
+    public void findByCriteria_shouldCallRepositoryToRetrieveCityByFederativeUnit() {
+        /* Given */
+        final List<City> expectedCities = Arrays.asList(new City(2L, "Joinville", "SC"));
+        given(this.repository.findByFederativeUnit(anyString())).willReturn(expectedCities);
+
+        /* When */
+        final List<City> cities = this.service.findByCriteria(CityCriteria.builder().federativeUnit("SC").build());
 
         /* Then */
         assertThat(cities).isEqualTo(expectedCities);
@@ -82,7 +113,7 @@ public class CityServiceFindTest {
         given(this.repository.findAll()).willReturn(expectedCities);
 
         /* When */
-        final List<City> cities = this.service.findByCriteria(null);
+        final List<City> cities = this.service.findByCriteria(new CityCriteria());
 
         /* Then */
         assertThat(cities).isEqualTo(expectedCities);

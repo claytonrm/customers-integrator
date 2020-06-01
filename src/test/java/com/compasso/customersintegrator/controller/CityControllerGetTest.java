@@ -18,7 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 
 import com.compasso.customersintegrator.domain.CityCriteria;
-import com.compasso.customersintegrator.model.City;
+import com.compasso.customersintegrator.domain.model.City;
 import com.compasso.customersintegrator.util.FileUtils;
 import com.compasso.customersintegrator.util.JsonUtils;
 

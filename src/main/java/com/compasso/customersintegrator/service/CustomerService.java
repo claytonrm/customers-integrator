@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.compasso.customersintegrator.domain.CustomerCriteria;
-import com.compasso.customersintegrator.model.City;
-import com.compasso.customersintegrator.model.Customer;
+import com.compasso.customersintegrator.domain.model.City;
+import com.compasso.customersintegrator.domain.model.Customer;
 import com.compasso.customersintegrator.repository.CustomerRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

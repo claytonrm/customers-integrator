@@ -13,7 +13,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
-import com.compasso.customersintegrator.model.Customer;
+import com.compasso.customersintegrator.domain.dto.CustomerDTO;
+import com.compasso.customersintegrator.domain.model.Customer;
 import com.compasso.customersintegrator.util.FileUtils;
 import com.compasso.customersintegrator.util.JsonUtils;
 import com.github.fge.jsonpatch.JsonPatch;
@@ -27,8 +28,8 @@ public class CustomerControllerPatchTest extends ControllerBase {
     public void update_shouldReturnSuccessContainingUpdatedResourceByCallingService() throws Exception {
         final String requestBody = FileUtils.readFile("./samples/customer_patch_name_sample.json");
         final String expectedResponseBody = FileUtils.readFile("./samples/customer_sample.json");
-        final Customer expectedCustomer = JsonUtils.fromString(expectedResponseBody, Customer.class);
-        given(super.customerService.update(anyLong(), any(JsonPatch.class))).willReturn(expectedCustomer);
+        final CustomerDTO expectedCustomer = JsonUtils.fromString(expectedResponseBody, CustomerDTO.class);
+        given(super.customerService.update(anyLong(), any(JsonPatch.class))).willReturn(super.toEntity(expectedCustomer));
 
         super.mockMvc.perform(patch(CUSTOMER_RELATIVE_PATH + 1)
                 .contentType("application/json-patch+json")

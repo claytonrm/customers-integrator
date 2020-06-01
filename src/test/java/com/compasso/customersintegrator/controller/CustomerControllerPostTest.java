@@ -19,9 +19,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 
-import com.compasso.customersintegrator.model.City;
-import com.compasso.customersintegrator.model.Customer;
-import com.compasso.customersintegrator.model.Gender;
+import com.compasso.customersintegrator.domain.Gender;
+import com.compasso.customersintegrator.domain.dto.CustomerDTO;
+import com.compasso.customersintegrator.domain.model.City;
+import com.compasso.customersintegrator.domain.model.Customer;
 import com.compasso.customersintegrator.util.FileUtils;
 import com.compasso.customersintegrator.util.JsonUtils;
 
@@ -46,7 +47,7 @@ public class CustomerControllerPostTest extends ControllerBase {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.uri", is("http://localhost/v1/customers/1")));
 
-        verify(super.customerService).create(JsonUtils.fromString(requestBody, Customer.class));
+        verify(super.customerService).create(super.toEntity(JsonUtils.fromString(requestBody, CustomerDTO.class)));
     }
 
     @Test
@@ -66,7 +67,7 @@ public class CustomerControllerPostTest extends ControllerBase {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.uri", is("http://localhost/v1/customers/1")));
 
-        verify(super.customerService).create(JsonUtils.fromString(requestBody, Customer.class));
+        verify(super.customerService).create(super.toEntity(JsonUtils.fromString(requestBody, CustomerDTO.class)));
     }
 
     @Test
@@ -79,7 +80,7 @@ public class CustomerControllerPostTest extends ControllerBase {
         super.mockMvc.perform(post(CUSTOMER_RELATIVE_PATH).content(requestBody).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
 
-        verify(super.customerService).create(JsonUtils.fromString(requestBody, Customer.class));
+        verify(super.customerService).create(super.toEntity(JsonUtils.fromString(requestBody, CustomerDTO.class)));
     }
 
     @Test

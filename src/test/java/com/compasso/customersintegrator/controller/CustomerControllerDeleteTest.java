@@ -14,7 +14,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.compasso.customersintegrator.model.Customer;
+import com.compasso.customersintegrator.domain.dto.CustomerDTO;
+import com.compasso.customersintegrator.domain.model.Customer;
 import com.compasso.customersintegrator.util.FileUtils;
 import com.compasso.customersintegrator.util.JsonUtils;
 
@@ -24,8 +25,8 @@ public class CustomerControllerDeleteTest extends ControllerBase {
 
     @Test
     public void delete_shouldCallServiceToRemoveCustomerAndReturnSuccess() throws Exception {
-        final Customer existingCustomer = JsonUtils.fromString(FileUtils.readFile("samples/existing_customer_sample.json"), Customer.class);
-        given(super.customerService.findById(anyLong())).willReturn(existingCustomer);
+        final CustomerDTO existingCustomer = JsonUtils.fromString(FileUtils.readFile("samples/existing_customer_sample.json"), CustomerDTO.class);
+        given(super.customerService.findById(anyLong())).willReturn(super.toEntity(existingCustomer));
 
         super.mockMvc.perform(MockMvcRequestBuilders.delete(CUSTOMER_RELATIVE_PATH + existingCustomer.getId())
                 .contentType(MediaType.APPLICATION_JSON_VALUE))

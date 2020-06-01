@@ -18,7 +18,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 
 import com.compasso.customersintegrator.domain.CustomerCriteria;
-import com.compasso.customersintegrator.model.Customer;
+import com.compasso.customersintegrator.domain.dto.CustomerDTO;
+import com.compasso.customersintegrator.domain.model.Customer;
 import com.compasso.customersintegrator.util.FileUtils;
 import com.compasso.customersintegrator.util.JsonUtils;
 
@@ -29,8 +30,8 @@ public class CustomerControllerGetTest extends ControllerBase {
     @Test
     public void get_shouldFindCustomerByResourceIdAndReturnSuccess() throws Exception {
         final String expectedResponse = FileUtils.readFile("samples/existing_customer_sample.json");
-        final Customer existingCustomer = JsonUtils.fromString(expectedResponse, Customer.class);
-        given(super.customerService.findById(anyLong())).willReturn(existingCustomer);
+        final CustomerDTO existingCustomer = JsonUtils.fromString(expectedResponse, CustomerDTO.class);
+        given(super.customerService.findById(anyLong())).willReturn(super.toEntity(existingCustomer));
 
         super.mockMvc.perform(get(CUSTOMER_RELATIVE_PATH + existingCustomer.getId())
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -48,12 +49,12 @@ public class CustomerControllerGetTest extends ControllerBase {
 
     @Test
     public void findByParams_shouldReturnSuccessCallingServiceToRetrieveCustomerByName() throws Exception {
-        final Customer existingCustomer = JsonUtils.fromString(
+        final CustomerDTO existingCustomer = JsonUtils.fromString(
                 FileUtils.readFile("./samples/existing_customer_sample.json"),
-                Customer.class
+                CustomerDTO.class
         );
         final String expectedResponseBody = FileUtils.readFile("./samples/customers_sample.json");
-        final List<Customer> expectedCustomers = Arrays.asList(existingCustomer);
+        final List<Customer> expectedCustomers = Arrays.asList(toEntity(existingCustomer));
         given(super.customerService.findByCriteria(any(CustomerCriteria.class))).willReturn(expectedCustomers);
 
         this.mockMvc.perform(get(CUSTOMER_RELATIVE_PATH).queryParam("name", "Billy Jean"))

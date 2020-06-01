@@ -7,6 +7,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
+import java.time.LocalDate;
+
 import javax.management.InstanceAlreadyExistsException;
 
 import org.junit.jupiter.api.DisplayName;
@@ -15,11 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.compasso.customersintegrator.model.City;
-import com.compasso.customersintegrator.model.Customer;
+import com.compasso.customersintegrator.domain.Gender;
+import com.compasso.customersintegrator.domain.model.City;
+import com.compasso.customersintegrator.domain.model.Customer;
 import com.compasso.customersintegrator.repository.CustomerRepository;
-import com.compasso.customersintegrator.util.FileUtils;
-import com.compasso.customersintegrator.util.JsonUtils;
 
 @SpringBootTest
 @DisplayName("[CustomerService] - Tests case for create Customer")
@@ -37,14 +38,8 @@ public class CustomerServiceCreateTest {
     @Test
     public void create_shouldCallRepositoryToCreateANewCustomer() throws InstanceAlreadyExistsException {
         /* Given */
-        final Customer newCustomer = JsonUtils.fromString(
-                FileUtils.readFile("samples/customer_sample.json"),
-                Customer.class
-        );
-        final Customer expectedCustomer = JsonUtils.fromString(
-                FileUtils.readFile("./samples/existing_customer_sample.json"),
-                Customer.class
-        );
+        final Customer newCustomer = getMockedCustomer();
+        final Customer expectedCustomer = getMockedExistingCustomer();
         given(this.repository.save(any(Customer.class))).willReturn(expectedCustomer);
         given(this.cityService.create(any(City.class))).willReturn(expectedCustomer.getCity());
 
@@ -59,13 +54,28 @@ public class CustomerServiceCreateTest {
 
     @Test
     public void create_shouldThrowAnIllegalArgumentExceptionIdMustNotBeProvided() {
-        final Customer newCustomer = JsonUtils.fromString(
-                FileUtils.readFile("samples/existing_customer_sample.json"),
-                Customer.class
-        );
+        final Customer newCustomer = getMockedExistingCustomer();
         assertThrows(IllegalArgumentException.class, () -> this.service.create(newCustomer));
         verifyNoInteractions(this.repository);
         verifyNoInteractions(this.cityService);
+    }
+
+    private Customer getMockedCustomer() {
+        return new Customer(
+                null,
+                "Billy Jean",
+                Gender.MALE,
+                LocalDate.of(2000, 1, 22),
+                20,
+                new City(null, "Florianópolis", "SC")
+        );
+    }
+
+    private Customer getMockedExistingCustomer() {
+        final Customer customer = getMockedCustomer();
+        customer.setId(1L);
+        customer.getCity().setId(1L);
+        return customer;
     }
 
 }

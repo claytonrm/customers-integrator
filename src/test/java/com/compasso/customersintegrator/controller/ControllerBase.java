@@ -2,10 +2,13 @@ package com.compasso.customersintegrator.controller;
 
 import org.junit.jupiter.api.AfterEach;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.compasso.customersintegrator.domain.dto.CustomerDTO;
+import com.compasso.customersintegrator.domain.model.Customer;
 import com.compasso.customersintegrator.repository.CityRepository;
 import com.compasso.customersintegrator.repository.CustomerRepository;
 import com.compasso.customersintegrator.service.CityService;
@@ -19,6 +22,9 @@ public class ControllerBase {
     @Autowired
     protected MockMvc mockMvc;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @MockBean
     protected CityService cityService;
 
@@ -30,6 +36,14 @@ public class ControllerBase {
 
     @MockBean
     private CustomerRepository customerRepository;
+
+    protected CustomerDTO toDTO(final Customer customer) {
+        return modelMapper.map(customer, CustomerDTO.class);
+    }
+
+    protected Customer toEntity(final CustomerDTO customerDTO) {
+        return modelMapper.map(customerDTO, Customer.class);
+    }
 
     @AfterEach
     public void tearDown() {

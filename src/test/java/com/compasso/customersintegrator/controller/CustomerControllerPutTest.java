@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 
-import com.compasso.customersintegrator.model.Customer;
+import com.compasso.customersintegrator.domain.dto.CustomerDTO;
+import com.compasso.customersintegrator.domain.model.Customer;
 import com.compasso.customersintegrator.util.FileUtils;
 import com.compasso.customersintegrator.util.JsonUtils;
 
@@ -20,13 +21,13 @@ public class CustomerControllerPutTest extends ControllerBase {
     @Test
     public void update_shouldCallServiceToUpdateEntireCustomer() throws Exception {
         final String requestBody = FileUtils.readFile("./samples/customer_sample.json");
-        final Customer customer = JsonUtils.fromString(requestBody, Customer.class);
+        final CustomerDTO customer = JsonUtils.fromString(requestBody, CustomerDTO.class);
 
         super.mockMvc.perform(put(CUSTOMER_RELATIVE_PATH + 1)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(requestBody))
                 .andExpect(status().isNoContent());
 
-        verify(super.customerService).update(1L, customer);
+        verify(super.customerService).update(1L, super.toEntity(customer));
     }
 
 }
