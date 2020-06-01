@@ -38,10 +38,7 @@ public class CustomerService {
             throw new IllegalArgumentException("Field \"id\" must not be provided. It will be generated automatically.");
         }
 
-        final City customerCity = customer.getCity();
-        if (customerCity != null && getExistingCustomerCity(customerCity.getId()) == null) {
-            this.cityService.create(customerCity);
-        }
+        createCustomerCity(customer.getCity());
         return this.repository.save(customer);
     }
 
@@ -78,9 +75,17 @@ public class CustomerService {
         return this.repository.save(applyPatchToCustomer(patch, existingCustomer));
     }
 
-    public void update(final Long id, final Customer customer) throws InstanceNotFoundException {
-        this.findById(id);
+    public void update(final Long id, final Customer customer) throws InstanceNotFoundException, InstanceAlreadyExistsException {
+        final Customer existingCustomer = this.findById(id);
+        customer.setId(existingCustomer.getId());
+        this.createCustomerCity(customer.getCity());
         this.repository.save(customer);
+    }
+
+    private void createCustomerCity(final City customerCity) throws InstanceAlreadyExistsException {
+        if (customerCity != null && getExistingCustomerCity(customerCity.getId()) == null) {
+            this.cityService.create(customerCity);
+        }
     }
 
     private Customer applyPatchToCustomer(final JsonPatch patch, final Customer targetCustomer) {

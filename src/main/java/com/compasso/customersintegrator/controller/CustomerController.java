@@ -103,7 +103,7 @@ public class CustomerController {
     @ApiOperation(value = "Full update on customer")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Object> update(@PathVariable final Long id, @RequestBody CustomerDTO customer) throws InstanceNotFoundException {
+    public ResponseEntity<Object> update(@PathVariable final Long id, @RequestBody CustomerDTO customer) throws InstanceNotFoundException, InstanceAlreadyExistsException {
         this.service.update(id, toEntity(customer));
         return ResponseEntity.noContent().build();
     }
