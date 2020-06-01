@@ -1,11 +1,14 @@
 package com.compasso.customersintegrator.service;
 
+import java.util.List;
+
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.compasso.customersintegrator.domain.CustomerCriteria;
 import com.compasso.customersintegrator.model.City;
 import com.compasso.customersintegrator.model.Customer;
 import com.compasso.customersintegrator.repository.CustomerRepository;
@@ -45,6 +48,10 @@ public class CustomerService {
     public void remove(final Long id) throws InstanceNotFoundException {
         final Customer existingCustomer = findById(id);
         this.repository.delete(existingCustomer);
+    }
+
+    public List<Customer> findByCriteria(final CustomerCriteria criteria) {
+        return null;
     }
 
     private City getExistingCustomerCity(final Long cityId) {

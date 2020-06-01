@@ -1,6 +1,7 @@
 package com.compasso.customersintegrator.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
@@ -14,11 +15,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.compasso.customersintegrator.domain.CityCriteria;
 import com.compasso.customersintegrator.domain.ResourceCreatedResponse;
 import com.compasso.customersintegrator.model.City;
 import com.compasso.customersintegrator.service.CityService;
@@ -53,6 +56,12 @@ public class CityController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<City> get(@PathVariable final Long id) throws InstanceNotFoundException {
         return ResponseEntity.ok(this.service.findById(id));
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<City>> findByParams(final CityCriteria criteria) {
+        return ResponseEntity.ok(this.service.findByCriteria(criteria));
     }
 
 }

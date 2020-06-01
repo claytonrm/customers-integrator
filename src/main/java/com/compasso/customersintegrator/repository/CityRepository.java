@@ -12,4 +12,8 @@ public interface CityRepository extends JpaRepository<City, Long> {
 
     List<City> findByNameAndFederativeUnit(final String name, final String federativeUnit);
 
+    List<City> findByName(final String name);
+
+    List<City> findByFederativeUnit(final String name);
+
 }

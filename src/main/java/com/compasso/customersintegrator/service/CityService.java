@@ -1,6 +1,5 @@
 package com.compasso.customersintegrator.service;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.management.InstanceAlreadyExistsException;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.compasso.customersintegrator.domain.CityCriteria;
 import com.compasso.customersintegrator.model.City;
 import com.compasso.customersintegrator.repository.CityRepository;
 
@@ -24,7 +24,11 @@ public class CityService {
     }
 
     public City create(final City newCity) throws InstanceAlreadyExistsException {
-        final List<City> existingCities = findByNameAndFederativeUnit(newCity.getName(), newCity.getFederativeUnit());
+        final List<City> existingCities = findByCriteria(CityCriteria.builder()
+                .name(newCity.getName())
+                .federativeUnit(newCity.getFederativeUnit())
+                .build()
+        );
         if (!existingCities.isEmpty()) {
             final Long existingCityId = existingCities.stream().findFirst().get().getId();
             throw new InstanceAlreadyExistsException(String.format("City already exists! You may check it on City ID: [%d].", existingCityId));
@@ -41,12 +45,20 @@ public class CityService {
                 .orElseThrow(() -> new InstanceNotFoundException(String.format("City %d does not exist!", id)));
     }
 
-    public List<City> findByNameAndFederativeUnit(final String name, final String federativeUnit) {
-        if (!StringUtils.isEmpty(name) && !StringUtils.isEmpty(federativeUnit)) {
-            return this.repository.findByNameAndFederativeUnit(name, federativeUnit);
+    public List<City> findByCriteria(final CityCriteria criteria) {
+        if (!StringUtils.isEmpty(criteria.getName()) && !StringUtils.isEmpty(criteria.getFederativeUnit())) {
+            return this.repository.findByNameAndFederativeUnit(criteria.getName(), criteria.getFederativeUnit());
         }
 
-        return Arrays.asList();
+        if (!StringUtils.isEmpty(criteria.getName())) {
+            return this.repository.findByName(criteria.getName());
+        }
+
+        if (!StringUtils.isEmpty(criteria.getFederativeUnit())) {
+            return this.repository.findByFederativeUnit(criteria.getName());
+        }
+
+        return this.repository.findAll();
     }
 
 }

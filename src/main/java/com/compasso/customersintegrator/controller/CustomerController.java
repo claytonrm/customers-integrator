@@ -1,6 +1,7 @@
 package com.compasso.customersintegrator.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.compasso.customersintegrator.domain.CustomerCriteria;
 import com.compasso.customersintegrator.domain.ResourceCreatedResponse;
 import com.compasso.customersintegrator.model.Customer;
 import com.compasso.customersintegrator.service.CustomerService;
@@ -55,6 +57,12 @@ public class CustomerController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Customer> get(@PathVariable final Long id) throws InstanceNotFoundException {
         return ResponseEntity.ok(this.service.findById(id));
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<Customer>> findByParams(final CustomerCriteria criteria) {
+        return ResponseEntity.ok(this.service.findByCriteria(criteria));
     }
 
     @DeleteMapping("/{id}")
