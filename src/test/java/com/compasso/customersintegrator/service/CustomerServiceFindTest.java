@@ -3,8 +3,12 @@ package com.compasso.customersintegrator.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import javax.management.InstanceNotFoundException;
@@ -15,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import com.compasso.customersintegrator.domain.CityCriteria;
+import com.compasso.customersintegrator.domain.CustomerCriteria;
+import com.compasso.customersintegrator.model.City;
 import com.compasso.customersintegrator.model.Customer;
 import com.compasso.customersintegrator.repository.CustomerRepository;
 import com.compasso.customersintegrator.util.FileUtils;
@@ -51,6 +58,41 @@ public class CustomerServiceFindTest {
         given(this.repository.findById(anyLong())).willReturn(Optional.empty());
 
         assertThrows(InstanceNotFoundException.class, () -> this.service.findById(99L));
+    }
+
+    @Test
+    public void findByCriteria_shouldCallRepositoryToRetrieveCustomerByName() {
+        /* Given */
+        final Customer existingCustomer = JsonUtils.fromString(
+                FileUtils.readFile("./samples/existing_customer_sample.json"),
+                Customer.class
+        );
+        final List<Customer> expectedCustomers = Arrays.asList(existingCustomer);
+        given(this.repository.findByName(anyString())).willReturn(expectedCustomers);
+
+        /* When */
+        final List<Customer> customers = this.service.findByCriteria(CustomerCriteria.builder().name("Billy Jean").build());
+
+        /* Then */
+        assertThat(customers).isEqualTo(expectedCustomers);
+    }
+
+    @Test
+    public void findByCriteria_shouldCallRepositoryToRetrieveAllCustomers() {
+        /* Given */
+        final Customer existingCustomer = JsonUtils.fromString(
+                FileUtils.readFile("./samples/existing_customer_sample.json"),
+                Customer.class
+        );
+        final List<Customer> expectedCustomers = Arrays.asList(existingCustomer);
+        given(this.repository.findAll()).willReturn(expectedCustomers);
+
+        /* When */
+        final List<Customer> customers = this.service.findByCriteria(null);
+
+        /* Then */
+        assertThat(customers).isEqualTo(expectedCustomers);
+        verify(this.repository).findAll();
     }
 
 }

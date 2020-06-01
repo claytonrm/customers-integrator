@@ -7,22 +7,30 @@ import javax.management.InstanceNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.compasso.customersintegrator.domain.CustomerCriteria;
 import com.compasso.customersintegrator.model.City;
 import com.compasso.customersintegrator.model.Customer;
 import com.compasso.customersintegrator.repository.CustomerRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 
 @Service
 public class CustomerService {
 
     private final CustomerRepository repository;
     private final CityService cityService;
+    private final ObjectMapper mapper;
 
     @Autowired
     private CustomerService(final CustomerRepository repository, final CityService cityService) {
         this.repository = repository;
         this.cityService = cityService;
+        this.mapper = new ObjectMapper();
     }
 
     public Customer create(final Customer customer) throws InstanceAlreadyExistsException {
@@ -51,7 +59,10 @@ public class CustomerService {
     }
 
     public List<Customer> findByCriteria(final CustomerCriteria criteria) {
-        return null;
+        if (criteria != null && !StringUtils.isEmpty(criteria.getName())) {
+            return this.repository.findByName(criteria.getName());
+        }
+        return this.repository.findAll();
     }
 
     private City getExistingCustomerCity(final Long cityId) {
@@ -62,4 +73,22 @@ public class CustomerService {
         }
     }
 
+    public Customer update(final Long id, final JsonPatch patch) throws InstanceNotFoundException {
+        final Customer existingCustomer = findById(id);
+        return this.repository.save(applyPatchToCustomer(patch, existingCustomer));
+    }
+
+    public void update(final Long id, final Customer customer) throws InstanceNotFoundException {
+        this.findById(id);
+        this.repository.save(customer);
+    }
+
+    private Customer applyPatchToCustomer(final JsonPatch patch, final Customer targetCustomer) {
+        try {
+            final JsonNode patched = patch.apply(mapper.convertValue(targetCustomer, JsonNode.class));
+            return mapper.treeToValue(patched, Customer.class);
+        } catch (JsonPatchException | JsonProcessingException e) {
+            throw new IllegalArgumentException("Could not process custom update operation", e);
+        }
+    }
 }

@@ -45,19 +45,21 @@ public class CityService {
                 .orElseThrow(() -> new InstanceNotFoundException(String.format("City %d does not exist!", id)));
     }
 
+    /* Change approach in case of increasing number of fields on CityCriteria */
     public List<City> findByCriteria(final CityCriteria criteria) {
-        if (!StringUtils.isEmpty(criteria.getName()) && !StringUtils.isEmpty(criteria.getFederativeUnit())) {
-            return this.repository.findByNameAndFederativeUnit(criteria.getName(), criteria.getFederativeUnit());
-        }
+        if (criteria != null) {
+            if (!StringUtils.isEmpty(criteria.getName()) && !StringUtils.isEmpty(criteria.getFederativeUnit())) {
+                return this.repository.findByNameAndFederativeUnit(criteria.getName(), criteria.getFederativeUnit());
+            }
 
-        if (!StringUtils.isEmpty(criteria.getName())) {
-            return this.repository.findByName(criteria.getName());
-        }
+            if (!StringUtils.isEmpty(criteria.getName())) {
+                return this.repository.findByName(criteria.getName());
+            }
 
-        if (!StringUtils.isEmpty(criteria.getFederativeUnit())) {
-            return this.repository.findByFederativeUnit(criteria.getName());
+            if (!StringUtils.isEmpty(criteria.getFederativeUnit())) {
+                return this.repository.findByFederativeUnit(criteria.getName());
+            }
         }
-
         return this.repository.findAll();
     }
 

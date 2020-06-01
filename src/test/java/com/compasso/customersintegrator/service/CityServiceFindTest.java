@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.List;
@@ -68,5 +69,23 @@ public class CityServiceFindTest {
 
         /* Then */
         assertThat(cities).isEqualTo(expectedCities);
+    }
+
+    @Test
+    public void findByCriteria_shouldCallRepositoryToRetrieveAllCities() {
+        /* Given */
+        final List<City> expectedCities = Arrays.asList(
+                new City(2L, "Joinville", "SC"),
+                new City(3L, "Curitiba", "PR"),
+                new City(4L, "Orleans", "SC")
+        );
+        given(this.repository.findAll()).willReturn(expectedCities);
+
+        /* When */
+        final List<City> cities = this.service.findByCriteria(null);
+
+        /* Then */
+        assertThat(cities).isEqualTo(expectedCities);
+        verify(this.repository).findAll();
     }
 }
